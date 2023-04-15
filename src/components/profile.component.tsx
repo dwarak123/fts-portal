@@ -43,7 +43,7 @@ export default class Profile extends Component<Props, State> {
     }
 
     const { currentUser } = this.state;
-
+  
     
     return (
       <div className="container">

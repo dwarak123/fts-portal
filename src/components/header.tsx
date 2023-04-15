@@ -14,191 +14,309 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { Link } from "react-router-dom";
 import authService from "../services/auth.service";
+import IUser from "../types/user.type";
+import EventBus from "../common/EventBus";
+const user: IUser = authService.getCurrentUser();
 
-const currentUser = authService.getCurrentUser();
+type Props = {};
 
-const pages = ["Products", "Pricing", "Blog"];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+type State = {
+    showModeratorBoard: boolean | undefined;
+    showAdminBoard: boolean | undefined;
+    currentUser: IUser | undefined;
+    hour: number;
+    anchorElNav: any,
+    setAnchorElNav: any,
+    anchorElUser: any,
+    setAnchorElUser: any
+};
 
-function ResponsiveAppBar() {
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null
-  );
+class ResponsiveAppBar extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
+        this.logOut = this.logOut.bind(this);
+        this.state = {
+            showModeratorBoard: false,
+            showAdminBoard: false,
+            currentUser: undefined,
+            hour: 0,
+            anchorElNav: null,
+            setAnchorElNav: null,
+            anchorElUser: null,
+            setAnchorElUser: null
+        };
+    }
 
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
+    getHour() {
+        const hour = new Date().getHours();
+        this.setState({
+            hour,
+        });
+    }
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
+    componentDidMount() {
+        const user: IUser = authService.getCurrentUser();
+        console.log(user);
+        if (user) {
+            this.setState({
+                currentUser: user,
+                showModeratorBoard: user.roles?.includes("ROLE_MODERATOR"),
+                showAdminBoard: user.roles?.includes("ROLE_ADMIN"),
+            });
+        }
+        EventBus.on("logout", this.logOut);
+    }
 
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
+    componentWillUnmount() {
+        EventBus.remove("logout", this.logOut);
+    }
 
-  return (
-    <AppBar position="static">
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: "none", md: "flex" },
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-           Financial Transaction System
-          </Typography>
+    logOut() {
+        authService.logout();
+        this.setState({
+            showModeratorBoard: false,
+            showAdminBoard: false,
+            currentUser: undefined,
+            anchorElNav: null,
+            setAnchorElNav: null,
+            anchorElUser: null,
+            setAnchorElUser: null
+        });
+        window.location.reload();
+    }
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleOpenNavMenu}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: "block", md: "none" },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: "flex", md: "none" },
-              flexGrow: 1,
-              fontFamily: "monospace",
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            LOGO
-          </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-          
-            <Button
-              component={Link}
-              to="/login"
-              variant="contained"
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-            >
-              Home
-            </Button>
+    render() {
+        const {
+            currentUser,
+            showModeratorBoard,
+            showAdminBoard,
+            hour
+        } = this.state;
 
-            <Button
-              component={Link}
-              to="/admin"
-              variant="contained"
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, ml: 2,color: "white", display: "block" }}
-            >
-              Admin
-            </Button>
 
-            <Button
-              component={Link}
-              to="/admin"
-              variant="contained"
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, ml: 2,color: "white", display: "block"}}
-            >
-              Mod
-            </Button>
+        const { anchorElNav, setAnchorElNav } = this.state;
+        const open = Boolean(anchorElNav);
 
-            <Button
-              component={Link}
-              to="/admin"
-              variant="contained"
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, ml: 2,color: "white", display: "block" }}
-            >
-              User
-            </Button>
-           
-          </Box>
+        const { anchorElUser, setAnchorElUser} = this.state;
+        const openUser = Boolean(anchorElUser)
+        
+        
 
-          
+        const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+            setAnchorElNav(anchorElNav ? null : event.currentTarget);
+        };
+        const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+            setAnchorElUser(event.currentTarget);
+        };
 
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: "45px" }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
-  );
+        const handleCloseNavMenu = () => {
+            setAnchorElNav(null);
+        };
+
+        const handleCloseUserMenu = () => {
+            setAnchorElUser(null);
+        };
+
+        return (
+            <AppBar position="static">
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters>
+                        <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="/"
+                            sx={{
+                                mr: 2,
+                                display: { xs: "none", md: "flex" },
+                                fontFamily: "monospace",
+                                fontWeight: 700,
+                                letterSpacing: ".3rem",
+                                color: "inherit",
+                                textDecoration: "none",
+                            }}
+                        >
+                            Financial Transaction System
+                        </Typography>
+                        <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleOpenNavMenu}
+                                color="inherit"
+                            >
+                                <MenuIcon />
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorElNav}
+                                anchorOrigin={{
+                                    vertical: "bottom",
+                                    horizontal: "left",
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "left",
+                                }}
+                                open={Boolean(anchorElNav)}
+                                onClose={handleCloseNavMenu}
+                                sx={{
+                                    display: { xs: "block", md: "none" },
+                                }}
+                            ></Menu>
+                        </Box>
+                        <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+                        <Typography
+                            variant="h5"
+                            noWrap
+                            component="a"
+                            href=""
+                            sx={{
+                                mr: 2,
+                                display: { xs: "flex", md: "none" },
+                                flexGrow: 1,
+                                fontFamily: "monospace",
+                                fontWeight: 700,
+                                letterSpacing: ".3rem",
+                                color: "inherit",
+                                textDecoration: "none",
+                            }}
+                        >
+                            FTS
+                        </Typography>
+                        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                            <Button
+                                component={Link}
+                                to="/"
+                                variant="contained"
+                                onClick={handleCloseNavMenu}
+                                sx={{ my: 2, color: "white", display: "block" }}
+                            >
+                                Home
+                            </Button>
+
+                           { showAdminBoard && ( <Button
+                                component={Link}
+                                to="/admin"
+                                variant="contained"
+                                onClick={handleCloseNavMenu}
+                                sx={{ my: 2, ml: 2, color: "white", display: "block" }}
+                            >
+                                Admin
+                            </Button>
+                           )}
+                            {showModeratorBoard || showAdminBoard && (<Button
+                                component={Link}
+                                to="/mod"
+                                variant="contained"
+                                onClick={handleCloseNavMenu}
+                                sx={{ my: 2, ml: 2, color: "white", display: "block" }}
+                            >
+                                Mod
+                            </Button>
+                            )}
+                            <Button
+                                component={Link}
+                                to="/user"
+                                variant="contained"
+                                onClick={handleCloseNavMenu}
+                                sx={{ my: 2, ml: 2, color: "white", display: "block" }}
+                            >
+                                User
+                            </Button>
+                        </Box>
+                        {currentUser ? (
+                            <Box sx={{ flexGrow: 0 }}>
+                                <Tooltip title="Open settings">
+                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                        {currentUser.photo && (
+                                            <img
+                                                className="bannerPhoto"
+                                                alt=""
+                                                src={`data:image/jpg;base64,${user.photo}`}
+                                            />
+                                        )}
+                                    </IconButton>
+                                </Tooltip>
+                                <Menu
+                                    sx={{ mt: "45px" }}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: "top",
+                                        horizontal: "right",
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: "top",
+                                        horizontal: "right",
+                                    }}
+                                    open={openUser}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    <MenuItem onClick={handleCloseUserMenu}>
+                                        <Button
+                                            variant="text"
+                                            component={Link}
+                                            to="/profile"
+                                            onClick={handleCloseNavMenu}
+                                        >
+                                            Profile
+                                        </Button>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleCloseUserMenu}>
+                                        <Button
+                                            variant="text"
+                                            component={Link}
+                                            to="/mod"
+                                            onClick={handleCloseNavMenu}
+                                        >
+                                            Dashboard
+                                        </Button>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleCloseUserMenu}>
+                                        <Button variant="text" onClick={this.logOut}>Logout</Button>
+                                    </MenuItem>
+                                    
+                                </Menu>
+                            </Box>
+                        ) : (
+                            <Box
+                                sx={{
+                                    ml: 50,
+                                    flexGrow: 1,
+                                    display: { xs: "none", md: "flex" },
+                                }}
+                            >
+                                <Button
+                                    component={Link}
+                                    to="/login"
+                                    variant="text"
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ my: 2, color: "white", display: "block" }}
+                                >
+                                    Login
+                                </Button>
+                                <Button
+                                    component={Link}
+                                    to="/register"
+                                    variant="text"
+                                    onClick={handleCloseNavMenu}
+                                    sx={{ my: 2, ml: 2, color: "white", display: "block" }}
+                                >
+                                    Register
+                                </Button>
+                            </Box>
+                        )}
+                        {currentUser ? (<Button variant="text" onClick={this.logOut} sx={{ my: 2, ml: 2, color: "white", display: "block" }}>Logout</Button>): null}
+                    </Toolbar>
+                </Container>
+            </AppBar>
+        );
+    }
 }
 export default ResponsiveAppBar;

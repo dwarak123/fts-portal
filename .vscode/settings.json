@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/2fe35ac2-a782-4d94-9cbb-b0003aabf8fd/resourceGroups/dtmr-portal/providers/Microsoft.Web/sites/DTMRPortal",
+    "appService.deploySubpath": "."
+}

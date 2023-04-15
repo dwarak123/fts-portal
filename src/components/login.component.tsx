@@ -33,7 +33,7 @@ export default class Login extends Component<Props, State> {
     const currentUser = AuthService.getCurrentUser();
 
     if (currentUser) {
-      this.setState({ redirect: "/profile" });
+      this.setState({ redirect: "/profile"} || { redirect: "/home"});
     };
   }
 
@@ -61,7 +61,7 @@ export default class Login extends Component<Props, State> {
       () => {
         this.setState({
           redirect: "/profile"
-        });
+        } || {redirect: "/home"});
       },
       error => {
         const resMessage =

@@ -13,6 +13,7 @@ class AuthService {
         console.log(JSON.stringify(response.data))
         if (response.data.accessToken) {
           localStorage.setItem("user", JSON.stringify(response.data));
+          console.log(JSON.stringify(localStorage.getItem('user')));
         }
         return response.data;
       });
@@ -34,7 +35,7 @@ class AuthService {
   getCurrentUser() {
     const userStr = localStorage.getItem("user");
     if (userStr) return JSON.parse(userStr);
-
+    console.log(userStr)
     return null;
   }
 }
