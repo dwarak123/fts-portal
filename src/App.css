@@ -49,6 +49,8 @@ td {
   width: 50px;
   border-radius: 100px;
   margin-left: 10px;
+  border-width: 10px;
+  border-color:burlywood;
 }
 
 .avatar{
@@ -58,8 +60,9 @@ td {
 
 
 .profilePhoto{
-  height: 380px;
-  width: 380px;border-color: rgb(70, 70, 70);
-  border-style:groove;
+  height: 300px;
+  border-radius: 150px;
+  border-style: groove;
   border-width: 10px;
+  border-color:burlywood;
 }
