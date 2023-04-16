@@ -19,6 +19,26 @@ class UserService {
   getAdminBoard() {
     return axios.get(API_URL + 'admin', { headers: authHeader() });
   }
-}
 
+  upload(file: string | Blob, onUploadProgress: any, email: any) {
+    let formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("email", email);
+
+    return axios.post("/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      onUploadProgress,
+    });
+
+  /*uploadPhoto(email: any, file: any){
+    const formDat = new FormData();
+    formDat.append('file', file);
+    formDat.append('email', email);
+    return axios.put(API_URL, 'uploadphoto', {headers: multiPartForm()});
+  }*/
+}
+}
 export default new UserService();

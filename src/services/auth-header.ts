@@ -12,3 +12,7 @@ export default function authHeader() {
     // return { 'x-access-token': null }; // for Node Express back-end
   }
 }
+
+export function multiPartForm() {
+return { 'Content-Type': 'multipart/form-data; boundary=--------------------------088789591551927551505294'}
+}

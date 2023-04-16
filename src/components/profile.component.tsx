@@ -20,7 +20,7 @@ export default class Profile extends Component<Props, State> {
     this.state = {
       redirect: null,
       userReady: false,
-      currentUser: { accessToken: "" }
+      currentUser: { accessToken: "" }      
     };
   }
 
@@ -38,6 +38,7 @@ export default class Profile extends Component<Props, State> {
     }
     return <Avatar className="avatar" name={currentUser.username + " " + currentUser.email} size="370" round={false} maxInitials={2} />
   }
+
 
   render() {
     if (this.state.redirect) {
