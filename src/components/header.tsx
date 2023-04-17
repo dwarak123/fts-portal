@@ -56,7 +56,6 @@ class ResponsiveAppBar extends React.Component<Props, State> {
 
   componentDidMount() {
     const user: IUser = authService.getCurrentUser();
-    console.log(user);
     if (user) {
       this.setState({
         currentUser: user,
