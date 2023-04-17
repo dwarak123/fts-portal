@@ -32,13 +32,6 @@ class UserService {
       },
       onUploadProgress,
     });
-
-  /*uploadPhoto(email: any, file: any){
-    const formDat = new FormData();
-    formDat.append('file', file);
-    formDat.append('email', email);
-    return axios.put(API_URL, 'uploadphoto', {headers: multiPartForm()});
-  }*/
 }
 }
 export default new UserService();
