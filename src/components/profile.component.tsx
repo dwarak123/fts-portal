@@ -1,28 +1,60 @@
-import { Component } from "react";
+import { ChangeEvent, Component, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 import IUser from "../types/user.type";
 import Avatar from 'react-avatar';
-import { Paper, Card, CardContent, CardActions, Button, Grid, Box, Divider } from "@mui/material";
+import { Paper, Card, CardContent, CardActions, Button, Grid, Box, Divider, TextField, Alert, Snackbar, Skeleton } from "@mui/material";
 import Typography from '@mui/material/Typography';
+import userService from "../services/user.service";
+import authService from "../services/auth.service";
+import { AxiosResponse } from "axios";
+
+let currentUser: IUser = authService.getCurrentUser();
 
 type Props = {};
 
 type State = {
   redirect: string | null,
   userReady: boolean,
-  currentUser: IUser & { accessToken: string }
+  currentUser: IUser & { accessToken: string },
+  selectedFile: File | undefined,
+  fileUploadSuccess: boolean | undefined
 }
 export default class Profile extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-
+    this.onFileChange = this.onFileChange.bind(this);
     this.state = {
       redirect: null,
       userReady: false,
-      currentUser: { accessToken: "" }      
+      currentUser: { accessToken: "" },
+      selectedFile: undefined,
+      fileUploadSuccess: undefined
     };
   }
+
+  onFileChange(event: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>): void {
+    if ('files' in event.target) {
+      this.setState({ selectedFile: event.target.files?.[0] });
+    }
+  }
+
+
+  onFileUpload = () => {
+    console.log(this.state.selectedFile);
+    try {
+      userService.upload(this.state.selectedFile, currentUser.email).then((response: AxiosResponse) => {
+        if (response.data) {
+          currentUser = response.data;
+          this.setState({ fileUploadSuccess: true });
+        }
+      })
+
+    } catch (error) {
+      throw new Error("Cannot upload file to database");
+    }
+  };
+
 
   componentDidMount() {
     const currentUser = AuthService.getCurrentUser();
@@ -45,7 +77,7 @@ export default class Profile extends Component<Props, State> {
       return <Navigate to={this.state.redirect} />
     }
 
-    const { currentUser } = this.state;
+    const { currentUser, fileUploadSuccess } = this.state;
 
 
     return (
@@ -57,22 +89,27 @@ export default class Profile extends Component<Props, State> {
                 <strong>{currentUser.username}</strong> Profile
               </h3>
             </header>
+
             <Grid container spacing={0}>
-              <Paper variant="outlined" elevation={20} />
+              <Paper variant="outlined" elevation={0} />
               <Paper />
-              <Card sx={{ width: 375, height: 390 }}>
+              <Card sx={{ width: 375, height: 450 }}>
                 <CardContent sx={{ display: 'flex', justifyContent: 'center' }}>
                   <this.profilePic />
                 </CardContent>
                 <CardActions>
-                  <Button variant="contained" sx={{ mb: 4, ml: 12.5, color: "white" }}>Upload Profile</Button>
+                  <Box sx={{ justifyItems: 'center' }}>
+                    <TextField type="file" style={{ color: 'blue' }} variant="standard" sx={{ color: "white", width: '40ch', mb: 2, justifySelf: 'center' }} onChange={this.onFileChange} />
+                    <Button variant="contained" onClick={this.onFileUpload} sx={{ color: "white", width: '45ch', }}>Upload foto 
+                    </Button>
+                  </Box>
                 </CardActions>
               </Card>
 
-              <Card sx={{ width: 715, height: 390, marginLeft: 2 }}>
+              <Card sx={{ width: 715, height: 450, marginLeft: 2 }}>
                 <CardContent>
                   <Box sx={{ display: "flex", flexDirection: "row", marginTop: 2, marginBottom: 2 }}>
-                    <Typography sx={{ fontSize: 20, marginLeft: 2, marginRight: 5 }}>Userid:</Typography>
+                    <Typography sx={{ fontSize: 20, marginLeft: 2, marginRight: 5 }}>id      :</Typography>
                     <Typography sx={{ fontSize: 18, fontWeight: 1 }}>{currentUser.id}</Typography>
                   </Box>
                   <Divider />
@@ -95,6 +132,9 @@ export default class Profile extends Component<Props, State> {
               </Card>
             </Grid>
           </div> : null}
+        {fileUploadSuccess && (
+          <Alert>File uploaded need to login again to see changes</Alert>
+        )}
       </div>
     );
   }

@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import authService from "../services/auth.service";
 import IUser from "../types/user.type";
 import EventBus from "../common/EventBus";
+import { MenuItem } from "@mui/material";
 const user: IUser = authService.getCurrentUser();
 
 type Props = {};
@@ -158,7 +159,8 @@ class ResponsiveAppBar extends React.Component<Props, State> {
                 sx={{
                   display: { xs: "block", md: "none" },
                 }}
-              ></Menu>
+              >
+             </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
             <Typography
@@ -180,16 +182,6 @@ class ResponsiveAppBar extends React.Component<Props, State> {
               FTS
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              <Button
-                component={Link}
-                to="/"
-                variant="text"
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-              >
-                Home
-              </Button>
-
               { currentUser ? (<Button
                 variant="text"
                 component={Link}
@@ -235,17 +227,6 @@ class ResponsiveAppBar extends React.Component<Props, State> {
                     Mod
                   </Button>
                 ))}
-              { currentUser ? (<Button
-                component={Link}
-                to="/user"
-                variant="text"
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, ml: 2, color: "white", display: "block" }}
-              >
-                User
-              </Button>
-              ): null}
-
             </Box>
             {currentUser ? (
               <Box sx={{ flexGrow: 0 }}>

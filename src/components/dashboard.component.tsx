@@ -10,7 +10,7 @@ type State = {
   error: AxiosError;
 }
 
-export default class Home extends Component<Props, State> {
+export default class Dashboard extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
@@ -42,7 +42,6 @@ export default class Home extends Component<Props, State> {
     return (
       <div className="container">
         <header className="jumbotron">
-          
             
         </header>
       </div>
