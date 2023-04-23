@@ -4,6 +4,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
 import AuthService from "../services/auth.service";
+import { Box, Button, Card } from '@mui/material';
 
 type Props = {};
 
@@ -33,7 +34,7 @@ export default class Login extends Component<Props, State> {
     const currentUser = AuthService.getCurrentUser();
 
     if (currentUser) {
-      this.setState({ redirect: "/profile"} || { redirect: "/home"});
+      this.setState({ redirect: "/profile"} || { redirect: "/login"});
     };
   }
 
@@ -92,8 +93,8 @@ export default class Login extends Component<Props, State> {
     };
 
     return (
-      <div className="col-md-12">
-        <div className="card card-container">
+      <Box className="col-md-12">
+        <Card className="card card-container">
           <img
             src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
             alt="profile-img"
@@ -127,12 +128,12 @@ export default class Login extends Component<Props, State> {
               </div>
 
               <div className="form-group">
-                <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
+                <Button type="submit" className="btn btn-primary btn-block" sx={ {color: 'grey'} }disabled={loading}>
                   {loading && (
                     <span className="spinner-border spinner-border-sm"></span>
                   )}
                   <span>Login</span>
-                </button>
+                </Button>
               </div>
 
               {message && (
@@ -144,8 +145,8 @@ export default class Login extends Component<Props, State> {
               )}
             </Form>
           </Formik>
-        </div>
-      </div>
+        </Card>
+      </Box>
     );
   }
 }

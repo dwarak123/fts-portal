@@ -15,7 +15,8 @@ import { Link } from "react-router-dom";
 import authService from "../services/auth.service";
 import IUser from "../types/user.type";
 import EventBus from "../common/EventBus";
-import { MenuItem } from "@mui/material";
+
+
 const user: IUser = authService.getCurrentUser();
 
 type Props = {};
@@ -30,6 +31,7 @@ type State = {
   anchorElUser: any;
   setAnchorElUser: any;
 };
+
 
 class ResponsiveAppBar extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -85,6 +87,7 @@ class ResponsiveAppBar extends React.Component<Props, State> {
   }
 
   render() {
+
     const { currentUser, showModeratorBoard, showAdminBoard, hour } =
       this.state;
 
@@ -160,7 +163,7 @@ class ResponsiveAppBar extends React.Component<Props, State> {
                   display: { xs: "block", md: "none" },
                 }}
               >
-             </Menu>
+              </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
             <Typography
@@ -182,7 +185,8 @@ class ResponsiveAppBar extends React.Component<Props, State> {
               FTS
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-              { currentUser ? (<Button
+
+              {currentUser ? (<Button
                 variant="text"
                 component={Link}
                 to="/profile"
@@ -191,18 +195,18 @@ class ResponsiveAppBar extends React.Component<Props, State> {
               >
                 Profile
               </Button>
-              ): null}
+              ) : null}
 
-                { currentUser ? (<Button
+              {currentUser ? (<Button
                 variant="text"
                 component={Link}
                 to="/mod"
                 onClick={handleCloseNavMenu}
-                sx={{  my: 2, ml: 2, color: "white", display: "block" }}
+                sx={{ my: 2, ml: 2, color: "white", display: "block" }}
               >
                 Dashboard
               </Button>
-              ): null}
+              ) : null}
 
               {showAdminBoard && (
                 <Button
@@ -279,6 +283,7 @@ class ResponsiveAppBar extends React.Component<Props, State> {
                 Logout
               </Button>
             ) : null}
+
           </Toolbar>
         </Container>
       </AppBar>
@@ -286,3 +291,4 @@ class ResponsiveAppBar extends React.Component<Props, State> {
   }
 }
 export default ResponsiveAppBar;
+

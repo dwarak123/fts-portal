@@ -99,8 +99,11 @@ export default class Profile extends Component<Props, State> {
                 </CardContent>
                 <CardActions>
                   <Box sx={{ justifyItems: 'center' }}>
-                    <TextField type="file" style={{ color: 'blue' }} variant="standard" sx={{ color: "white", width: '40ch', mb: 2, justifySelf: 'center' }} onChange={this.onFileChange} />
-                    <Button variant="contained" onClick={this.onFileUpload} sx={{ color: "white", width: '45ch', }}>Upload foto 
+                    <Button variant="contained" component="label" sx={{ width: '45ch', mb: 2, justifySelf: 'center' }} >
+                      Upload
+                      <input hidden accept="image/*" multiple type="file" onChange={this.onFileChange} />
+                    </Button>
+                    <Button variant="contained" onClick={this.onFileUpload} sx={{ width: '45ch', }}>Upload foto
                     </Button>
                   </Box>
                 </CardActions>
